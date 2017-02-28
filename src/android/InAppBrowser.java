@@ -992,6 +992,26 @@ public class InAppBrowser extends CordovaPlugin {
                 } catch (android.content.ActivityNotFoundException e) {
                     LOG.e(LOG_TAG, "Error sending sms " + url + ":" + e.toString());
                 }
+            } else {
+                Boolean shouldAllowNavigation = null;
+                try{
+                    Method gpm = this.webView.getClass().getMethod("getPluginManager");
+                    PluginManager pm = (PluginManager)gpm.invoke(this.webView);
+                    Method san = pm.getClass().getMethod("shouldAllowNavigation", String.class);
+                    shouldAllowNavigation = (Boolean)san.invoke(pm, url);
+                } catch (NoSuchMethodException e) {
+                    LOG.e(LOG_TAG, e.getLocalizedMessage());
+                } catch (IllegalAccessException e) {
+                    LOG.e(LOG_TAG, e.getLocalizedMessage());
+                } catch (InvocationTargetException e) {
+                    LOG.e(LOG_TAG, e.getLocalizedMessage());
+                }
+                if (!Boolean.TRUE.equals(shouldAllowNavigation)) {
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(Uri.parse(url));
+                    cordova.getActivity().startActivity(intent);
+                    return true;
+                }
             }
             return false;
         }
