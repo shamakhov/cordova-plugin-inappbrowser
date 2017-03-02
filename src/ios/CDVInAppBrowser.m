@@ -448,7 +448,16 @@
 
         [self.commandDelegate sendPluginResult:pluginResult callbackId:self.callbackId];
     }
-
+    if (isTopLevelNavigation) {
+        CDVPlugin* obj = [self.commandDelegate getCommandInstance:@"IntentAndNavigationFilter"];
+        SEL filterSelector = NSSelectorFromString(@"filterUrl:");
+        NSInteger filterValue = [obj performSelector:filterSelector withObject:request.URL];
+        if (filterValue == 0) {
+            [theWebView stopLoading];
+            [self openInSystem:url];
+            return NO;
+        }
+    }
     return YES;
 }
 
