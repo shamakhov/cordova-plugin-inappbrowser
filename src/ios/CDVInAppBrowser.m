@@ -455,6 +455,7 @@
         if (filterValue == 0) {
             [theWebView stopLoading];
             [self openInSystem:url];
+            NSLog(@"Opening url in system browser %@", url);
             return NO;
         }
     }

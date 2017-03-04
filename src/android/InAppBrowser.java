@@ -1010,6 +1010,7 @@ public class InAppBrowser extends CordovaPlugin {
                     Intent intent = new Intent(Intent.ACTION_VIEW);
                     intent.setData(Uri.parse(url));
                     cordova.getActivity().startActivity(intent);
+                    LOG.i(LOG_TAG, "Opening url in system browser: " + url);
                     return true;
                 }
             }
